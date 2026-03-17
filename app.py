@@ -141,15 +141,8 @@ def crear_pdf(empresa, contacto, correo, puesto, am_cisco, resp_best, fecha, ver
     def clean_txt(texto):
         if not texto:
             return "N/A"
-   # SOLUCIÓN AL ERROR DE EXPORTACIÓN
-    salida_pdf = pdf.output(dest="S")
-    
-    # Si la librería devuelve un string (FPDF1), lo codificamos. 
-    # Si devuelve un bytearray (FPDF2), lo pasamos a bytes directamente.
-    if isinstance(salida_pdf, str):
-        return salida_pdf.encode("latin-1")
-    else:
-        return bytes(salida_pdf)
+        return str(texto).encode('latin-1', 'replace').decode('latin-1')
+        
     
     try:
         pdf.image('logo_typhoon.jpg', 10, 8, 40)
@@ -283,9 +276,13 @@ def crear_pdf(empresa, contacto, correo, puesto, am_cisco, resp_best, fecha, ver
     pdf.set_x(10)
     pdf.multi_cell(0, 4, clean_txt(disclaimer))
     
-    # SOLUCIÓN AL ERROR DE EXPORTACIÓN
-    # Convertimos la salida de pdf.output() directamente a bytes
-    return bytes(pdf.output())
+# SOLUCIÓN DEFINITIVA AL ERROR DE EXPORTACIÓN
+    salida_pdf = pdf.output(dest="S")
+    
+    if isinstance(salida_pdf, str):
+        return salida_pdf.encode("latin-1")
+    else:
+        return bytes(salida_pdf)
 
 # --- BOTÓN DE GENERACIÓN ---
 st.divider()
