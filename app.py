@@ -141,7 +141,15 @@ def crear_pdf(empresa, contacto, correo, puesto, am_cisco, resp_best, fecha, ver
     def clean_txt(texto):
         if not texto:
             return "N/A"
-        return str(texto).encode('latin-1', 'replace').decode('latin-1')
+   # SOLUCIÓN AL ERROR DE EXPORTACIÓN
+    salida_pdf = pdf.output(dest="S")
+    
+    # Si la librería devuelve un string (FPDF1), lo codificamos. 
+    # Si devuelve un bytearray (FPDF2), lo pasamos a bytes directamente.
+    if isinstance(salida_pdf, str):
+        return salida_pdf.encode("latin-1")
+    else:
+        return bytes(salida_pdf)
     
     try:
         pdf.image('logo_typhoon.jpg', 10, 8, 40)
